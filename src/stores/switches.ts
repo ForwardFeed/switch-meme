@@ -20,9 +20,9 @@ function setURL(switches: Switch[]){
 
 function parseURLparameters(): Switch[]{
     const default_data = [
-        {text: "#Bug #10"},
-        {text: "#Bug #99"},
-        {text: "#Bug 120"},
+        {text: "Fix Bug #10"},
+        {text: "Fix Bug #99"},
+        {text: "Fix Bug #120"},
         {text: "Reasonnable deadlines", disabled: true},
     ]
     const query = useRoute().query
