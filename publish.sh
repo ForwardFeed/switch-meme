@@ -5,7 +5,7 @@ set -e
 
 git checkout github-pages
 
-git merge --no-ff -m "updated github pages"
+git merge main -m "merged from main branch" --no-ff 
 git push
 
 git checkout main
