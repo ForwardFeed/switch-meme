@@ -4,10 +4,8 @@
 set -e
 
 git checkout github-pages
-git merge main
 
-git add .
-git commit -m "updated github pages"
+git merge main -m "merged from main branch" --no-ff 
 git push
 
 git checkout main
