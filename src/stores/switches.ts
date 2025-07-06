@@ -6,6 +6,12 @@ import { useRoute } from 'vue-router';
 export type Switch = {
     text: string;
     disabled?: boolean;
+    checked: boolean,
+    id: number
+}
+
+function getRandomTargetID(length: number): number{
+    return Math.floor(Math.random() * length)
 }
 
 function setURL(switches: Switch[]){
@@ -17,23 +23,41 @@ function setURL(switches: Switch[]){
         }
     })
 }
-
-function parseURLparameters(): Switch[]{
-    const default_data = [
+const default_data = [
         {text: "Fix Bug #10"},
         {text: "Fix Bug #99"},
         {text: "Fix Bug #120"},
         {text: "Reasonnable deadlines", disabled: true},
-    ]
+    ].map((x, i) => {
+         return {
+            ...x,
+            checked: true,
+            id: i
+        }
+    })
+function parseURLparameters(): Switch[]{
+    
     const query = useRoute().query
     if (query.d){
-        // @ts-ignore fish
-        return query.d.map(x => {
+
+        if (!query.d || typeof query.d == "string"){
+            return default_data
+        }
+        return query.d.map((x,id) => {
+            if (!x){
+                return {
+                    text: "Fix Bug #10",
+                    id,
+                    checked: false,
+                }
+            }
             const text = x.slice(0, -1)
             const disabled = !!+x.slice(-1)
             return {
                 text,
-                disabled
+                disabled,
+                checked: false,
+                id
             }
         })
     }
@@ -41,24 +65,57 @@ function parseURLparameters(): Switch[]{
 }
 
 export const useSwitchStore = defineStore('switches', () => {
-    const count = ref(0)
-    const enabled_count = ref(0)
-    const texts = reactive([] as Switch[])
-    function increment() {
-        count.value+= 1
+    const switches = reactive([] as Switch[])
+    function enabled_count(): number{
+        return switches.filter(x => !x.disabled).length
     }
-    function decrement() {
-        count.value-= 1
+    function count(): number{
+        return switches.filter(x => x.checked).length
     }
-    function init(switches: Switch[]){
-        texts.length = 0
-        texts.push(...switches)
-        count.value = 0
-        enabled_count.value = texts.filter(x => !x.disabled).length
+    function init(new_switches: Switch[]){
+        switches.length = 0
+        switches.push(...new_switches)
     }
-    watch(texts, function(){
-        setURL(texts)
-    })
+    function add_new(text: string){
+            switches.push({
+            text,
+            disabled: false,
+            checked: false,
+            id: switches.length
+        })
+    }
+    function remove(id: number){
+        // update ids of all the one after because ID are sync with their real place
+        for(let i = id + 1; i < switches.length; i++){
+            switches[i].id -= 1
+        }
+        const removed = switches.splice(id, 1)[0]
+        const first_target = switches.findIndex(x => x.checked)
+        if (~first_target){
+            NoAllChecked(first_target)
+        }   
+    }
+    function NoAllChecked(id: number){
+        if ( count() == enabled_count()){
+            // if you have disabled everything...
+            if (switches.filter(x => x.checked && !x.disabled).length <= 1){
+                const target = document.querySelectorAll('[data-switch-target="cs"] input')[id] as HTMLInputElement
+                target.checked = false
+                return
+            }
+            // so I don't close the one I'm clicking on, while still making things random
+            let random = getRandomTargetID(switches.length)
+            while(random == id || switches[random].disabled){
+                random = getRandomTargetID(switches.length)
+            }
+            const target = document.querySelectorAll('[data-switch-target="cs"] input')[random] as HTMLInputElement
+            target.checked = false
+            
+        }
+    }
+        watch(switches, function(){
+            setURL(switches)
+        })
     init(parseURLparameters())
-    return { count, enabled_count, texts, decrement, increment, init}
+    return { enabled_count, switches, init, add_new, remove, NoAllChecked}
 })

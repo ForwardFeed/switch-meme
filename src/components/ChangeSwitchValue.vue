@@ -3,31 +3,27 @@ import { useSwitchStore, type Switch } from '@/stores/switches';
 import CustomSwitch from './CustomSwitch.vue';
 
 type Props = {
-    text: string,
-    id: number,
-    disabled?: boolean
+    data: Switch
 }
-const props = withDefaults(defineProps<Props>(), {
-    disabled: false
-})
+const props = withDefaults(defineProps<Props>(), {})
 
 const switches = useSwitchStore()
 function onInput(payload: Event){
     const target = payload.target as HTMLInputElement
-    switches.texts[props.id].text = target.value
+    props.data.text = target.value
 }
 function onChange(value: boolean){
-    switches.texts[props.id].disabled = value
+    props.data.disabled = value
 }
 function deleteSwitch(){
-    switches.texts.splice(props.id, 1)
+    switches.remove(props.data.id)
 }
 </script>
 <template>
 <div class="text-input-wrapper">
-    <CustomSwitch @change="onChange" :value="props.disabled"/>
+    <CustomSwitch @change="onChange" :value="props.data.disabled"/>
     <label class="label-input">
-        <input type="text" :value="props.text" @input="onInput">
+        <input type="text" :value="props.data.text" @input="onInput">
     </label>
     <button class="delete" @click="deleteSwitch">
         X
