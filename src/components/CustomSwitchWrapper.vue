@@ -1,27 +1,26 @@
 <script lang="ts" setup>
+import type { Switch } from '@/stores/switches';
 import CustomSwitch from './CustomSwitch.vue';
+import { toRefs } from 'vue';
 
 type Props = {
-    text: string,
-    id: number,
-    disabled?: boolean
+    data: Switch
 }
+const props = withDefaults(defineProps<Props>(), {})
 const emits = defineEmits<{
-(e: "accept", id: number): void,
-(e: "reject", id: number): void
+(e: "change", value: boolean, id:number): void,
 }>()
 function change(value: boolean){
-    if (value) emits("accept", props.id)
-    else emits("reject", props.id)
+    // changing that two lines order will fugg things up
+    props.data.checked = value
+    emits("change", value, props.data.id)
 }
-const props = withDefaults(defineProps<Props>(), {
-    disabled: false
-})
+
 </script>
 <template>
-<div class="wrapper-switch">
-    <CustomSwitch :disabled="props.disabled" @change="change"/>
-    <span class="text">{{ text }}</span>
+<div class="wrapper-switch" data-switch-target="cs">
+    <CustomSwitch :disabled="props.data.disabled" @change="change"/>
+    <span class="text">{{ data.text }}</span>
 </div>
 
 </template>
