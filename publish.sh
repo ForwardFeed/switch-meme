@@ -4,7 +4,7 @@
 set -e
 
 git checkout github-pages
-git merge main
+git merge main -m "merged from main branch" --no-ff -X theirs
 
 bun run build-only
 
