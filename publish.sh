@@ -4,13 +4,12 @@
 set -e
 
 git checkout github-pages
+git merge main
 
 bun run build-only
 
 git add .
-git commit -m "updated build"
-
-git merge main -m "merged from main branch" --no-ff 
+git commit -m "updated build from main"
 git push
 
 git checkout main
