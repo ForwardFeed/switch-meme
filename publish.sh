@@ -3,6 +3,9 @@
 #exit at failure
 set -e
 
+# first check if you haven't forgotten to push something to remote
+# it has to work this way because else things gets overwritten pain xd
+
 git checkout github-pages
 
 bun run build-only
