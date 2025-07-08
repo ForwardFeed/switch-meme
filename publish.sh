@@ -4,12 +4,12 @@
 set -e
 
 git checkout github-pages
-git rebase main
+git merge main
 
 bun run build-only
 
 git add .
-git commit -m "updated build"
+git commit -m "updated build from main"
 git push
 
 git checkout main
