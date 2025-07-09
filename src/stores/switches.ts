@@ -29,12 +29,14 @@ const default_data = [
         {text: "Fix Bug #120"},
         {text: "Reasonnable deadlines", disabled: true},
     ].map((x, i) => {
-         return {
+        return {
             ...x,
-            checked: true,
-            id: i
+            checked: false,
+            id: i,
+            disabled: x.disabled || false
         }
     })
+
 function parseURLparameters(): Switch[]{
     
     const query = useRoute().query
@@ -42,6 +44,7 @@ function parseURLparameters(): Switch[]{
 
         if (!query.d || typeof query.d == "string"){
             return default_data
+            
         }
         return query.d.map((x,id) => {
             if (!x){
