@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { Switch } from '@/stores/switches';
 import CustomSwitch from './CustomSwitch.vue';
-import { toRefs } from 'vue';
 
 type Props = {
     data: Switch

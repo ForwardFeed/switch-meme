@@ -62,11 +62,7 @@ function change(payload: Event){
     -webkit-transition: .4s;
     transition: .4s;
 }
-input:disabled + .slider{
-    background-color: rgb(126, 73, 73);
-    display: inline-block;
-    content: "\00d7";
-}
+
 input:checked + .slider {
     background-color: #2196F3;
 }
@@ -79,5 +75,11 @@ input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
+}
+
+input:disabled + .slider{
+    background-color: rgb(126, 73, 73);
+    display: inline-block;
+    content: "\00d7";
 }
 </style>
